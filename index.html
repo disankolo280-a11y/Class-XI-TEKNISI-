@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XI Teknisi — Struktur Organisasi</title>
+<style>
+:root{
+  --bg:#050b14;--panel:#0c1727;--card:#101f33;--line:#58adff;
+  --text:#f5f8fc;--muted:#9fb1c8;--border:rgba(120,185,255,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;color:var(--text);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(55,145,235,.18),transparent 30%),
+    radial-gradient(circle at 85% 30%,rgba(115,78,210,.13),transparent 30%),
+    linear-gradient(145deg,#030811,#081525);
+  overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:42px 42px;
+}
+.hidden{display:none!important}
+
+/* INTRO */
+.intro{
+  position:fixed;z-index:100;inset:0;display:grid;place-items:center;
+  background:#030811;transition:opacity .8s,visibility .8s;
+}
+.intro.hide{opacity:0;visibility:hidden}
+.intro-box{text-align:center;padding:25px}
+.intro-logo{
+  width:86px;height:86px;margin:0 auto 25px;border-radius:24px;
+  display:grid;place-items:center;border:1px solid var(--border);
+  background:linear-gradient(145deg,#122944,#091626);
+  box-shadow:0 0 55px rgba(75,165,255,.18);
+  font-size:2rem;color:var(--line);animation:pulse 1.8s infinite;
+}
+.intro-small{color:var(--line);font-size:.75rem;letter-spacing:.25em;font-weight:800}
+.intro h1{font-size:clamp(2.3rem,9vw,5.5rem);letter-spacing:-.06em;margin:10px 0}
+.intro p{color:var(--muted)}
+.loader{width:180px;height:2px;background:#15263b;margin:25px auto 0;overflow:hidden}
+.loader i{display:block;height:100%;background:var(--line);animation:load 2.4s forwards}
+
+/* HEADER */
+header{text-align:center;padding:65px 20px 45px}
+.tag{
+  display:inline-block;padding:8px 13px;border:1px solid var(--border);
+  border-radius:999px;color:var(--line);font-size:.72rem;font-weight:800;
+  letter-spacing:.14em;margin-bottom:15px;background:rgba(12,29,48,.7)
+}
+header h2{font-size:clamp(2rem,6vw,4.1rem);letter-spacing:-.05em}
+header p{color:var(--muted);margin-top:12px}
+
+/* INTRO MEMBER AREA */
+.intro-members{
+  width:min(1100px,calc(100% - 30px));margin:0 auto 45px;
+  padding:26px;border:1px solid var(--border);border-radius:25px;
+  background:rgba(10,23,39,.72);box-shadow:0 20px 60px rgba(0,0,0,.22);
+  text-align:center;
+}
+.intro-members h3{font-size:1rem;margin-bottom:5px}
+.intro-members>p{font-size:.82rem;color:var(--muted);margin-bottom:20px}
+.member-stage{
+  min-height:155px;display:grid;place-items:center;position:relative;overflow:hidden;
+}
+.member-preview{
+  display:flex;align-items:center;gap:20px;text-align:left;
+  animation:memberIn .7s ease both;
+}
+.photo{
+  width:105px;height:105px;border-radius:50%;flex:0 0 auto;
+  border:2px solid rgba(88,173,255,.45);
+  background:linear-gradient(145deg,#152c47,#081524);
+  display:grid;place-items:center;color:#7590aa;font-size:2rem;
+  box-shadow:0 0 30px rgba(88,173,255,.12);overflow:hidden;
+}
+.photo img{width:100%;height:100%;object-fit:cover}
+.preview-role{font-size:.7rem;color:var(--line);font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.preview-name{font-size:1.45rem;font-weight:800;margin-top:5px}
+.preview-note{font-size:.78rem;color:var(--muted);margin-top:6px}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:17px}
+.dot{width:6px;height:6px;border-radius:50%;background:#29415c}
+.dot.active{background:var(--line);width:20px;border-radius:10px}
+
+/* CHART */
+main{width:min(1180px,calc(100% - 30px));margin:auto}
+.org{
+  display:flex;flex-direction:column;align-items:center;
+}
+/* Area diagram dapat digeser kiri-kanan pada layar kecil */
+.org-scroll{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:thin;
+  padding:4px 0 18px;
+  -webkit-overflow-scrolling:touch;
+}
+.org-scroll > .org{
+  min-width:1100px;
+}
+.level{width:100%;display:flex;justify-content:center;position:relative;margin-bottom:65px}
+.down{
+  position:absolute;bottom:-65px;left:50%;width:2px;height:65px;
+  background:linear-gradient(var(--line),rgba(88,173,255,.1));
+}
+.card{
+  width:min(310px,90vw);min-height:175px;padding:20px;border-radius:21px;
+  border:1px solid var(--border);background:linear-gradient(155deg,#132945,#0a1728);
+  box-shadow:0 18px 45px rgba(0,0,0,.3);text-align:center;
+  transition:.25s;position:relative;overflow:hidden;
+}
+.card:hover{transform:translateY(-6px);border-color:rgba(88,173,255,.65)}
+.avatar{
+  width:82px;height:82px;margin:0 auto 13px;border-radius:50%;
+  display:grid;place-items:center;background:#0b1b2d;
+  border:1px solid rgba(88,173,255,.28);color:#5c7894;font-size:1.7rem;overflow:hidden;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.role{font-size:.69rem;letter-spacing:.11em;text-transform:uppercase;color:var(--line);font-weight:850}
+.name{font-size:1.08rem;font-weight:800;margin-top:6px}
+.empty{color:#b4c1d0}
+.note{font-size:.73rem;color:var(--muted);margin-top:5px}
+.pair{display:flex;width:min(720px,100%);justify-content:center;gap:20px;position:relative}
+.pair:before{
+  content:"";position:absolute;left:25%;right:25%;top:-33px;height:2px;background:var(--line)
+}
+.pair .card{width:min(300px,43vw)}
+.pair .card:before{
+  content:"";position:absolute;top:-33px;width:2px;height:33px;background:var(--line)
+}
+.pair .card:first-child:before{right:50%}
+.pair .card:last-child:before{left:50%}
+.grid{
+  width:min(1050px,100%);display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;position:relative
+}
+.grid:before{content:"";position:absolute;left:16.66%;right:16.66%;top:-33px;height:2px;background:var(--line)}
+.wrap{position:relative}
+.wrap:before{content:"";position:absolute;left:50%;top:-33px;width:2px;height:33px;background:var(--line)}
+.grid .card{width:100%}
+
+footer{text-align:center;color:var(--muted);font-size:.72rem;padding:30px 20px 45px}
+
+/* animation */
+.reveal{opacity:0;transform:translateY(25px);animation:rise .65s ease forwards}
+.level:nth-child(1) .card{animation-delay:.05s}
+.level:nth-child(2) .card{animation-delay:.15s}
+.level:nth-child(3) .card{animation-delay:.25s}
+.level:nth-child(4) .card{animation-delay:.35s}
+
+@keyframes load{to{width:100%}}
+@keyframes pulse{50%{transform:scale(1.05);box-shadow:0 0 70px rgba(75,165,255,.3)}}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes memberIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+
+@media(max-width:760px){
+  header{padding-top:42px}
+  .member-preview{gap:14px}
+  .photo{width:82px;height:82px}
+  .preview-name{font-size:1.15rem}
+
+  /* Struktur tetap berbentuk diagram horizontal.
+     Geser dengan swipe kiri/kanan pada HP. */
+  .org-scroll{
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+    padding-left:18px;
+    padding-right:18px;
+    overscroll-behavior-x:contain;
+  }
+  .org-scroll > .org{
+    min-width:1100px;
+  }
+  .pair{flex-direction:row;align-items:stretch}
+  .pair:before,.pair .card:before,.grid:before,.wrap:before{display:block}
+  .pair .card{width:300px}
+  .grid{grid-template-columns:repeat(3,1fr);width:1050px}
+  .grid .card{width:100%}
+  .level{margin-bottom:65px}
+  .down{height:65px;bottom:-65px}
+}
+</style>
+</head>
+<body>
+
+<!-- ANIMASI PEMBUKA -->
+<section class="intro" id="intro">
+  <div class="intro-box">
+    <div class="intro-logo">XI</div>
+    <div class="intro-small">WELCOME TO</div>
+    <h1>TEKNISI</h1>
+    <p>Struktur Organisasi Kelas</p>
+    <div class="loader"><i></i></div>
+  </div>
+</section>
+
+<header>
+  <div class="tag">◆ CLASS ORGANIZATION</div>
+  <h2>XI TEKNISI</h2>
+  <p>Struktur Organisasi Kelas • Tahun Pelajaran <span id="year"></span></p>
+</header>
+
+<!-- AREA PERKENALAN FOTO -->
+<section class="intro-members">
+  <h3>PERKENALAN ANGGOTA</h3>
+  <p>Area ini otomatis menampilkan foto dan nama anggota satu per satu.</p>
+  <div class="member-stage" id="memberStage"></div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<main>
+<div class="org-scroll" aria-label="Geser struktur organisasi ke kiri atau kanan">
+<section class="org">
+
+  <div class="level reveal">
+    <article class="card">
+      <div class="avatar">★</div>
+      <div class="role">Wali Kelas</div>
+      <div class="name empty">Nama Wali Kelas</div>
+      <div class="note">Pembimbing kelas</div>
+    </article>
+    <div class="down"></div>
+  </div>
+
+  <div class="level reveal">
+    <div class="pair">
+      <article class="card">
+        <div class="avatar">♛</div>
+        <div class="role">Ketua Kelas</div>
+        <div class="name empty">Nama Ketua</div>
+        <div class="note">Koordinator utama kelas</div>
+      </article>
+      <article class="card">
+        <div class="avatar">♟</div>
+        <div class="role">Wakil Ketua</div>
+        <div class="name empty">Nama Wakil Ketua</div>
+        <div class="note">Membantu ketua kelas</div>
+      </article>
+    </div>
+    <div class="down"></div>
+  </div>
+
+  <div class="level reveal">
+    <div class="pair">
+      <article class="card">
+        <div class="avatar">▤</div>
+        <div class="role">Sekretaris</div>
+        <div class="name empty">Nama Sekretaris</div>
+        <div class="note">Administrasi kelas</div>
+      </article>
+      <article class="card">
+        <div class="avatar">◈</div>
+        <div class="role">Bendahara</div>
+        <div class="name empty">Nama Bendahara</div>
+        <div class="note">Keuangan kelas</div>
+      </article>
+    </div>
+    <div class="down"></div>
+  </div>
+
+  <div class="level reveal">
+    <div class="grid">
+      <div class="wrap"><article class="card">
+        <div class="avatar">✦</div><div class="role">Seksi Kebersihan</div>
+        <div class="name empty">Nama Anggota</div><div class="note">Kebersihan kelas</div>
+      </article></div>
+
+      <div class="wrap"><article class="card">
+        <div class="avatar">⚙</div><div class="role">Seksi Perlengkapan</div>
+        <div class="name empty">Nama Anggota</div><div class="note">Perlengkapan kelas</div>
+      </article></div>
+
+      <div class="wrap"><article class="card">
+        <div class="avatar">◆</div><div class="role">Seksi Keamanan</div>
+        <div class="name empty">Nama Anggota</div><div class="note">Ketertiban kelas</div>
+      </article></div>
+
+      <div class="wrap"><article class="card">
+        <div class="avatar">◎</div><div class="role">Seksi Dokumentasi</div>
+        <div class="name empty">Nama Anggota</div><div class="note">Dokumentasi kegiatan</div>
+      </article></div>
+
+      <div class="wrap"><article class="card">
+        <div class="avatar">⌁</div><div class="role">Seksi Olahraga</div>
+        <div class="name empty">Nama Anggota</div><div class="note">Kegiatan olahraga</div>
+      </article></div>
+
+      <div class="wrap"><article class="card">
+        <div class="avatar">⌘</div><div class="role">Seksi Teknologi</div>
+        <div class="name empty">Nama Anggota</div><div class="note">Teknologi kelas</div>
+      </article></div>
+    </div>
+  </div>
+
+</section>
+</div>
+</main>
+
+<div style="text-align:center;color:#8fa4bc;font-size:.75rem;margin:0 auto 12px;">
+  ← Geser ke kiri/kanan untuk melihat seluruh struktur →
+</div>
+
+<footer>XI TEKNISI • Struktur Organisasi Kelas</footer>
+
+<script>
+const year = new Date().getFullYear();
+document.getElementById("year").textContent = `${year}/${year+1}`;
+
+/*
+  DATA PERKENALAN — MASIH KOSONG.
+  Nanti cukup ganti:
+  nama: "Nama Siswa"
+  jabatan: "Jabatan"
+  foto: "foto.jpg"
+
+  Foto bisa berupa:
+  - "foto.jpg" jika file foto berada di folder yang sama
+  - "images/foto.jpg" jika berada di folder images
+*/
+const anggota = [
+  {nama:"Nama Wali Kelas", jabatan:"Wali Kelas", foto:""},
+  {nama:"Nama Ketua", jabatan:"Ketua Kelas", foto:""},
+  {nama:"Nama Wakil Ketua", jabatan:"Wakil Ketua", foto:""},
+  {nama:"Nama Sekretaris", jabatan:"Sekretaris", foto:""},
+  {nama:"Nama Bendahara", jabatan:"Bendahara", foto:""},
+  {nama:"Nama Anggota", jabatan:"Seksi Kebersihan", foto:""},
+  {nama:"Nama Anggota", jabatan:"Seksi Perlengkapan", foto:""},
+  {nama:"Nama Anggota", jabatan:"Seksi Keamanan", foto:""},
+  {nama:"Nama Anggota", jabatan:"Seksi Dokumentasi", foto:""},
+  {nama:"Nama Anggota", jabatan:"Seksi Olahraga", foto:""},
+  {nama:"Nama Anggota", jabatan:"Seksi Teknologi", foto:""}
+];
+
+const stage=document.getElementById("memberStage");
+const dots=document.getElementById("dots");
+let current=0;
+
+anggota.forEach((_,i)=>{
+  const d=document.createElement("span");
+  d.className="dot"+(i===0?" active":"");
+  dots.appendChild(d);
+});
+
+function showMember(i){
+  const m=anggota[i];
+  stage.innerHTML="";
+  const box=document.createElement("div");
+  box.className="member-preview";
+
+  const photo=document.createElement("div");
+  photo.className="photo";
+  if(m.foto){
+    const img=document.createElement("img");
+    img.src=m.foto;
+    img.alt="Foto "+m.nama;
+    photo.appendChild(img);
+  }else{
+    photo.textContent="＋";
+  }
+
+  box.innerHTML=`
+    <div></div>
+    <div>
+      <div class="preview-role">${m.jabatan}</div>
+      <div class="preview-name">${m.nama}</div>
+      <div class="preview-note">Foto dan identitas dapat ditambahkan nanti.</div>
+    </div>`;
+  box.prepend(photo);
+  stage.appendChild(box);
+
+  document.querySelectorAll(".dot").forEach((d,n)=>{
+    d.classList.toggle("active",n===i);
+  });
+}
+
+showMember(0);
+setInterval(()=>{
+  current=(current+1)%anggota.length;
+  showMember(current);
+},3000);
+
+window.addEventListener("load",()=>{
+  setTimeout(()=>document.getElementById("intro").classList.add("hide"),2700);
+});
+</script>
+</body>
+</html>
